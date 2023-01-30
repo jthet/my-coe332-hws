@@ -20,7 +20,7 @@ Run `generate_sites.py` with the following command:
 ``` 
 $ python3 generate_sites.py 
 ```
-  This will return a JSON file with data on the ID, latitude, longitude, composition of 5 different meteors. 
+This will create a JSON file with a dictionary containing meteorite landing data, specifically the ID, latitude, longitude, composition of 5 different meteors. The created file name will be `meteorLanding_sites.json`.
   
   
  #### Step 2: Read Meteorite Data and Analyze
@@ -30,7 +30,7 @@ $ python3 calculate_trip.py
 ```
   This will read in the JSON file from step 1, and analyze the data. The data analysis consideres a mars rover moving from a staring position at (lat, long) = (16.0 , 82.0) and moving to each meteroite landing site. This file calculates the time between each landing site or each "leg", as well as the time it takes the rover to sample the metoer. Lastly, it calculates the total number of trips it took, the total time, and the total distance traveled. 
   
-  producing an output similar to the following:
+This will produce an output similar to the following:
   
  ```
 $ python3 calculate_trip.py 
