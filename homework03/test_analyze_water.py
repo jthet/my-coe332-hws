@@ -1,9 +1,9 @@
+#!/usr/bin/env python3
+
 import analyze_water
-
 import pytest
-
-
 from analyze_water import turb_Calc, turb_threshold, time_til_safe
+import sys, os
 
 def test_turb_calc():
     data = {"turbidity_data": [
@@ -45,7 +45,12 @@ def test_time_til_safe():
     assert(time_til_safe(a5, b, c) == 0)
 
 
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+    # blocks test_turb_threshold from printing 
+
 def main():
+    blockPrint()
     test_turb_calc()
     test_turb_threshold()
     test_time_til_safe()
