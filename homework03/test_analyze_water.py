@@ -3,7 +3,7 @@
 import analyze_water
 import pytest
 from analyze_water import turb_Calc, turb_threshold, time_til_safe
-import sys, os
+import sys, os # kinda pointless but using to mute print output from safety check
 
 def test_turb_calc():
     data = {"turbidity_data": [
@@ -50,7 +50,7 @@ def blockPrint():
     # blocks test_turb_threshold from printing 
 
 def main():
-    blockPrint()
+    blockPrint() # muting output
     test_turb_calc()
     test_turb_threshold()
     test_time_til_safe()
