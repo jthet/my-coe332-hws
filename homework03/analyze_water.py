@@ -76,6 +76,7 @@ def time_til_safe(turb_curr: float, safe_thresh: float, decay_fact: float) -> fl
 
 def main():
 
+    # Pulling data from json set and creating dict
     response = requests.get(url='https://raw.githubusercontent.com/wjallen/turbidity/main/turbidity_data.json')
     turbidityDict = response.json()
 
@@ -83,6 +84,7 @@ def main():
     turb_curr = turb_Calc(turbidityDict)
     print(f'The current water turbidity is {turb_curr:.6} NTU')
 
+    # variable  for safety check and time til safe calculation
     decay_fact = 0.02
     safe_thresh = 1.0
     
