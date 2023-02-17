@@ -39,12 +39,8 @@ def speed_calc(epoch):
 
 @app.route('/epochs/<int:epoch>/position', methods = ['GET'])
 def get_position(epoch) -> dict:
-     # formatted as [X, Y, Z]
     epoch_state = get_entry(epoch)
     position = {'X': epoch_state['X']['#text'], 'Y': epoch_state['Y']['#text'], 'Z': epoch_state['Z']['#text']}
-   # position.append(epoch_state['X']['#text'])
-   # position.append(epoch_state['Y']['#text'])
-   # position.append(epoch_state['Z']['#text'])
     return position
 
 @app.route('/epochs/<int:epoch>/velocity', methods = ['GET'])
@@ -56,7 +52,18 @@ def get_velocity(epoch) -> list:
     position.append(epoch_state['Z_DOT']['#text'])
     return position
 
+'''
+Notes:
+    Make doc strings
+    use type hints
 
+    use "try:" and expetion handling for every function 
+
+    make get_velocity return a dict instead of a list
+
+    add query parameters?
+
+'''
 
 
 
