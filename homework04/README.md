@@ -17,8 +17,6 @@ Flask application for querying the ISS position and velocity. The application sh
 The routes and returns are as follows
 
 
-Colons can be used to align columns.
-
 | Route         | Return        | 
 | ------------- |:-------------:| 
 | `/`     | returns full data set | 
@@ -39,4 +37,147 @@ $ pip3 install (flask/requests/xmltodict)
 ```
 
 #### Step 1: Run the Flask app 
-To run the app, start the 
+To run the flask application:
+```
+$ flask --app iss_tracker --debug run 
+```
+This should output the following prompt:
+
+```
+$ flask --app iss_tracker --debug run 
+ * Serving Flask app 'iss_tracker'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 108-861-049
+
+```
+
+#### Step 2: Use the Flask app
+Each route can be accesd with the following:
+```
+$ curl localhost:5000/ [ROUTE]
+```
+
+
+All of the routes and example output are shown below.
+
+Route: `/`
+```
+$ curl localhost:5000/
+              .
+              .
+              .
+ {
+    "EPOCH": "2023-063T12:00:00.000Z",
+    "X": {
+      "#text": "2820.04422055639",
+      "@units": "km"
+    },
+    "X_DOT": {
+      "#text": "5.0375825820999403",
+      "@units": "km/s"
+    },
+    "Y": {
+      "#text": "-5957.89709645725",
+      "@units": "km"
+    },
+    "Y_DOT": {
+      "#text": "0.78494316057540003",
+      "@units": "km/s"
+    },
+    "Z": {
+      "#text": "1652.0698653803699",
+      "@units": "km"
+    },
+    "Z_DOT": {
+      "#text": "-5.7191913150960803",
+      "@units": "km/s"
+    }
+  }
+]
+```
+
+
+Route: `/epochs`
+```
+$ curl localhost:5000/epochs
+              .
+              .
+              .
+  "2023-063T11:43:00.000Z",
+  "2023-063T11:47:00.000Z",
+  "2023-063T11:51:00.000Z",
+  "2023-063T11:55:00.000Z",
+  "2023-063T11:59:00.000Z",
+  "2023-063T12:00:00.000Z"
+]
+```
+
+Route: `/epochs/<int:epoch>`
+```
+$ curl localhost:5000/epochs/1
+
+{
+  "EPOCH": "2023-048T12:04:00.000Z",
+  "X": {
+    "#text": "-5998.4652356788401",
+    "@units": "km"
+  },
+  "X_DOT": {
+    "#text": "-2.8799691318087701",
+    "@units": "km/s"
+  },
+  "Y": {
+    "#text": "391.26194859011099",
+    "@units": "km"
+  },
+  "Y_DOT": {
+    "#text": "-5.2020406581448801",
+    "@units": "km/s"
+  },
+  "Z": {
+    "#text": "-3164.26047476555",
+    "@units": "km"
+  },
+  "Z_DOT": {
+    "#text": "4.8323394499086101",
+    "@units": "km/s"
+  }
+}
+```
+
+
+Route: `/epochs/1/position`
+```
+$ curl localhost:5000/epochs/1/position
+{
+  "X (km)": "-5998.4652356788401",
+  "Y (km)": "391.26194859011099",
+  "Z (km)": "-3164.26047476555"
+}
+```
+
+Route: `/epochs/1/velocity`
+```
+$ curl localhost:5000/epochs/1/velocity
+[
+  "-2.8799691318087701",
+  "-5.2020406581448801",
+  "4.8323394499086101"
+]
+```
+
+
+Route: `/epochs/1/speed`
+```
+$ curl localhost:5000/epochs/1/speed
+{
+  "speed (km/s)": 58.70695376830683
+}
+```
+
+
