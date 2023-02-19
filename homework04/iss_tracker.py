@@ -52,7 +52,7 @@ def get_epochs() -> list:
         epochs.append(d['EPOCH'])
     return epochs
 
-@app.route('/epochs/<int:epoch>', methods = ['GET'])
+@app.route('/epochs/<int:epoch>', methods = ['GET']) 
 def get_entry(epoch: str) -> dict:
     """
     Given an epoch, returns the state vectors associated with that specific epoch.
@@ -66,11 +66,11 @@ def get_entry(epoch: str) -> dict:
         data[int(epoch)] (dict): returns the given index "epoch" of the data list from the full data set 
     """
     # Every other function calls this function so this the only error checking we need
-
+    # <int:epoch>  works too but used try block just to test functionality 
     try: 
         epoch = int(epoch)
-    except ValueError
-        return "Error: Epoch must be an integer"
+    except ValueError:
+        return "Error: Epoch must be an integer\n", 404
 
     data = get_data() 
     return data[int(epoch)]
@@ -86,12 +86,12 @@ def speed_calc(epoch: str) -> dict:
             - Note: epoch is given as a string but is converted to and used as a integer to index a list. 
 
     Returns:
-        {"speed" : speed} (dict): returns the speed of a given index "epoch"
+        {"speed (km/s)" : speed} (dict): returns the speed of a given index "epoch"
     """
 
     veloList = get_velocity(epoch)
     speed = sum([float(i)**2 for i in veloList])
-    return {"speed" : speed}
+    return {"speed (km/s)" : speed}
 
 @app.route('/epochs/<int:epoch>/position', methods = ['GET'])
 def get_position(epoch: str) -> dict:
@@ -109,10 +109,10 @@ def get_position(epoch: str) -> dict:
 
 
     epoch_state = get_entry(epoch)
-    position = {'X': epoch_state['X']['#text'], 'Y': epoch_state['Y']['#text'], 'Z': epoch_state['Z']['#text']}
+    position = {'X (km)': epoch_state['X']['#text'], 'Y (km)': epoch_state['Y']['#text'], 'Z (km)': epoch_state['Z']['#text']}
     return position
 
-@app.route('/epochs/<int:epoch>/velocity', methods = ['GET'])
+@app.route('/epochs/<int:epoch>/velocity', methods = ['GET']) # Really just need this func for speed calc but added app route anyway
 def get_velocity(epoch: str) -> list:
     """
     Given an epoch, returns the velocity of the ISS at that specific epoch. 
@@ -132,9 +132,6 @@ def get_velocity(epoch: str) -> list:
     velo.append(epoch_state['Y_DOT']['#text'])
     velo.append(epoch_state['Z_DOT']['#text'])
     return velo
-
-
-
 
 
 if __name__ == '__main__':
