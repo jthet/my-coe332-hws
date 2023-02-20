@@ -27,6 +27,8 @@ The routes and returns are as follows
 | `/epochs/<int:epoch>/speed`  | returns the speed of a specific epoch      |
 
 
+** Note: <epoch> takes in an integer value, corresponding to the index of the epcon (i.e. the first epoch in the data set is epoch = 1)
+
 
 ### Instructions and Instalation:
 Download all files in homework04 folder and proceed.
