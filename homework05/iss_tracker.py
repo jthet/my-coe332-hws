@@ -258,7 +258,7 @@ def delete_data() -> str:
     return 'Data is deleted\n'
 
 
-@app.route('/post-data', methods = ['GET']) ######### NEED TO CHANGE TO POST ONLY ####### Doesnt work idk why ##### "method is not allowed"
+@app.route('/post-data', methods = ['POST']) ######### NEED TO CHANGE TO POST ONLY ####### Doesnt work idk why ##### "method is not allowed"
 def post_data() -> str:
     """
     Restores the data to the ISS dictionary
