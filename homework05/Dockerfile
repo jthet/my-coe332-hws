@@ -7,5 +7,3 @@ RUN pip3 install xmltodict==0.13.0
 COPY iss_tracker.py /iss_tracker.py
 
 CMD ["python3", "iss_tracker.py"]
-
-# Still in Progress
