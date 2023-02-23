@@ -1,8 +1,7 @@
 from flask import Flask, request
-from collections import OrderedDict
 import requests
 import xmltodict
-import subprocess
+
 
 
 
@@ -74,7 +73,7 @@ def get_epochs() -> list:
         return "Error: query parameter 'offset' must be an integer\n", 404
 
     try:
-        limit = int(request.args.get('limit', len(all_epochs)))
+        limit = int(request.args.get('limit', len(all_epochs) - offset))
     except ValueError:
         return "Error: query parameter 'limit' must be an integer\n", 404
 
@@ -229,14 +228,14 @@ def get_help() -> str:
 
     list_of_functions = ['get_data', 'get_all', 'get_epochs', 'get_entry', 'speed_calc', 'get_position', 'get_velocity', 'get_help', 'delete_data', 'post_data']
     
-    help_message = '\n HERE IS A HELP MESSAGE FOR EVERY FUNCTION/ROUTE IN "iss_tracker.py" \n'
+    help_message = '\nHERE IS A HELP MESSAGE FOR EVERY FUNCTION/ROUTE IN "iss_tracker.py"\n\n'
 
     for func in list_of_functions:
         help_message = help_message + f'{func}:\n' + eval(func).__doc__ + '\n\n'
 
     return help_message
 
-@app.route('/delete-data', methods = ['GET','DELETE']) ######### NEED TO CHANGE TO DELETE BUT IDK HOW
+@app.route('/delete-data', methods = ['DELETE']) 
 def delete_data() -> str:
     """
     Deletes all data from the data set
@@ -249,16 +248,14 @@ def delete_data() -> str:
     Returns:
         (str) 'Data is deleted'
     """
-
-    for i in range(len(dataSet)):
-        dataSet.pop()
-
-    # tried using clear() - it worked but for some reason posting data doesnt work 
+    # USE: 'curl -X DELETE localhost:5000/post-data'
+    global dataSet
+    dataSet.clear()
 
     return 'Data is deleted\n'
 
 
-@app.route('/post-data', methods = ['POST']) ######### NEED TO CHANGE TO POST ONLY ####### Doesnt work idk why ##### "method is not allowed"
+@app.route('/post-data', methods = ['POST']) 
 def post_data() -> str:
     """
     Restores the data to the ISS dictionary
@@ -271,14 +268,14 @@ def post_data() -> str:
     Returns:
         (str) 'Data is posted'
     """
-    # dataSet = get_data() # NOT WORKING WHY??????????         -  seems to no update global dataSet variable ?
-    
-    dataSet.extend(copyOfData)
+    # USE: 'curl -X POST localhost:5000/post-data'
+    global dataSet
+    dataSet = get_data()
 
-    return str(type(dataSet)) +'\n'
+    return "Data has been posted\n"
 
 
-#dataSet = {} # global Variable ??????
+#dataSet = {} # global Variable
 dataSet = get_data()
 copyOfData = dataSet
 
