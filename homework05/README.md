@@ -1,16 +1,13 @@
 # READ ME IN PROGRESS
 
-#Homework 4: "Buddy Flask" 
-### Scenario: Scenario: You have found an abundance of interesting positional and velocity data for the International Space Station (ISS). It is a challenge, however, to sift through the data manually to find what you are looking for. Your objective is to build a Flask application for querying and returning interesting information from the ISS data set.
-
-#### Objective: Gain familiarity with flask. 
+#Homework 5: "Undone (The Sweater Container)" 
+### Scenario: The API you developed for the ISS positional and velocity data (in homework 04) is a great start! But, there are many improvements we could make in order to make the API more useful. And, we can use some smart software engineering & design strategies to make our app more portable.
+#### Objective: Gain familiarity with flask and containers. 
 
 ### Data:
 The data for this homework set is a XML file that contains information on the state Vectors of the ISS at different epochs (points in time). The data can be viewed here: [ISS Public Data](https://spotthestation.nasa.gov/trajectory_data.cfm).
 
 The Data is read in as XML and converted to a python dictionary with the module `xmltodict`
-
-
 
 ### Scripts:
 
@@ -27,28 +24,47 @@ The routes and returns are as follows
 | `/epochs/<int:epoch>/position`  | returns the positional coordinates of a specific epoch     |
 | `/epochs/<int:epoch>/velocity`  | returns the velocity of a specific epoch        |
 | `/epochs/<int:epoch>/speed`  | returns the speed of a specific epoch      |
+| `/help`  | Return help text (as a string) that briefly describes each route     |
+| `/delete-data`  | Delete all data from the dictionary object |
+| `/post-data`  | Reload the dictionary object with data from the web |
 
 
 ** Note: epoch takes in an integer value, corresponding to the index of the epoch (i.e. the first epoch in the data set is epoch = 1)
 
 
-### Instructions and Instalation:
-Download all files in homework04 folder and proceed.
-Note: flask, requests and xmltodict need to be installed. 
-To install: 
-```
-$ pip3 install (flask/requests/xmltodict)
-```
 
-#### Step 1: Run the Flask app 
-To run the flask application:
-```
-$ flask --app iss_tracker --debug run 
-```
+
+`Dockerfile`: Text document that contains the commands to assemble the iss_tracker Docker image that is used to produce the Docker container when ran. 
+
+### Instructions and Instalation:
+#### Method 1: Use Existing Docker Image:
+
+To use the existing Docker Image run the following commands:
+'''
+$ docker pull jthet/iss_tracker:hw05
+.
+.
+.
+$ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
+'''
+
+
+
+This will open the flask app. Skip to step 2 of method 2 below to see how to use the flask app. 
+
+#### Method 2: Use Existing Docker Image:
+
+
+
+
+
+### Running the Flask App
+
+#### After the container is built(by running the image) :
 This should output the following prompt:
 
 ```
-$ flask --app iss_tracker --debug run 
+$
  * Serving Flask app 'iss_tracker'
  * Debug mode: on
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
