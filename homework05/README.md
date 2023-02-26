@@ -1,6 +1,4 @@
-# READ ME IN PROGRESS
-
-#Homework 5: "Undone (The Sweater Container)" 
+# Homework 5: "Undone (The Sweater Container)" 
 ### Scenario: The API you developed for the ISS positional and velocity data (in homework 04) is a great start! But, there are many improvements we could make in order to make the API more useful. And, we can use some smart software engineering & design strategies to make our app more portable.
 #### Objective: Gain familiarity with flask and containers. 
 
@@ -36,27 +34,44 @@ The routes and returns are as follows
 
 `Dockerfile`: Text document that contains the commands to assemble the iss_tracker Docker image that is used to produce the Docker container when ran. 
 
-### Instructions and Instalation:
+### Instructions and Installation:
 #### Method 1: Use Existing Docker Image:
 
 To use the existing Docker Image run the following commands:
-'''
+```
 $ docker pull jthet/iss_tracker:hw05
 .
 .
 .
 $ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
-'''
+```
 
 
 
 This will open the flask app. Skip to step 2 of method 2 below to see how to use the flask app. 
 
-#### Method 2: Use Existing Docker Image:
+#### Method 2: Build a new image from Dockerfile:
+To build a new image from the existing Dockerfile, execute the following commands:
+```
+$ docker build -t <dockerhubusername>/<code>:<version> .
+```
+Example:
+```
+$ docker build -t jthet/iss_tracker:hw05 .
+```
 
+Check the image was built:
+```
+$ docker images
+REPOSITORY                 TAG        IMAGE ID       CREATED              SIZE
+jthet/iss_tracker        1.0        2883079fad18   About a minute ago   928MB
 
-
-
+```
+Run the image with the following:
+```
+$ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
+```
+This will open the flask app. Skip to step 2 of method 2 below to see how to use the flask app. 
 
 ### Running the Flask App
 
@@ -199,5 +214,17 @@ $ curl localhost:5000/epochs/1/speed
   "speed (km/s)": 58.70695376830683
 }
 ```
+
+
+### Query Parameters
+The route `/epochs` has 2 query paramaters: "limit" and "offset" 
+
+The offset query parameter should offset the start point by an integer. For example, `offset=0` would begin printing at the first Epoch, `offset=1` would begin printing at the second Epoch, etc. The limit query parameter controls how many results are returned. For example `limit=10` would return 10 Epochs, `limit=100` would return 100 Epochs, etc. Putting them together, the route `/epochs?limit=20&offset=50` would return Epochs 51 through 70 (20 total).
+
+Example:
+```
+`/epochs?limit=1&offset=50
+```
+
 
 
