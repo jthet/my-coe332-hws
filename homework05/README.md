@@ -87,15 +87,15 @@ Run the image with the following:
 ```
 $ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
 ```
-This will open the flask app. Skip to step 2 of method 2 below to see how to use the flask app. 
+This will open the flask app in a new container.
 
 ### Running the Flask App
 
-#### After the container is built(by running the image) :
+#### After the container is built and the Flask app is running:
 This should output the following prompt:
 
 ```
-$
+$ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
  * Serving Flask app 'iss_tracker'
  * Debug mode: on
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
@@ -104,10 +104,9 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 108-861-049
-
 ```
 
-#### Step 2: Use the Flask app
+#### Using the Flask app
 Each route can be accesd with the following:
 ```
 $ curl localhost:5000/ [ROUTE]
@@ -231,6 +230,52 @@ $ curl localhost:5000/epochs/1/speed
 }
 ```
 
+Route: `/help`
+```
+$ curl localhost:5000/help
+
+HERE IS A HELP MESSAGE FOR EVERY FUNCTION/ROUTE IN "iss_tracker.py"
+
+get_data:
+
+    Retrieves the data from the nasa published ISS location coordinates, converts from XML to a dictionary, and returns the 
+    Valuable data concering the ISS position and velocity at different times. 
+
+    Route: None, only used to retreive data for other routes
+
+    Args:
+        None
+
+    Returns:
+        data (dict): the ISS stateVectors at different epochs
+    
+
+get_all:
+
+    Returns all epochs for the entire data set of the ISS state vectors. Decorated with the app route "<baseURL>/"
+
+    Route: <baseURL>/
+
+    Args:
+        None
+
+    Returns:
+        dataSet (dict): Dictionary of all epochs and corresponding state Vectors of the ISS
+    
+```
+
+Route: `/delete-data` (Must use `-X DELETE` tag)
+```
+$ curl -X DELETE localhost:5000/delete-data
+Data is deleted
+```
+
+Route: `/post-data` (Must use `-X POST` tag)
+```
+$ curl -X POST localhost:5000/post-data
+Data is posted
+```
+
 
 ### Query Parameters
 The route `/epochs` has 2 query paramaters: "limit" and "offset" 
@@ -239,7 +284,13 @@ The offset query parameter should offset the start point by an integer. For exam
 
 Example:
 ```
-`/epochs?limit=1&offset=50
+$ curl 'localhost:5000/epochs?limit=4&offset=20'
+{
+  "21": "2023-055T13:20:00.000Z",
+  "22": "2023-055T13:24:00.000Z",
+  "23": "2023-055T13:28:00.000Z",
+  "24": "2023-055T13:32:00.000Z"
+}
 ```
 
 
