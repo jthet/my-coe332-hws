@@ -40,27 +40,43 @@ The routes and returns are as follows
 To use the existing Docker Image run the following commands:
 ```
 $ docker pull jthet/iss_tracker:hw05
-.
-.
-.
+...
 $ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
 ```
-
-
-
 This will open the flask app. Skip to step 2 of method 2 below to see how to use the flask app. 
 
 #### Method 2: Build a new image from Dockerfile:
 To build a new image from the existing Dockerfile, execute the following commands:
+Note: Dockerfile must be in the current directory when this command is executed.
 ```
 $ docker build -t <dockerhubusername>/<code>:<version> .
 ```
 Example:
 ```
-$ docker build -t jthet/iss_tracker:hw05 .
+$ my-coe332-hws/homework05$ docker build -t jthet/iss_tracker:hw05 .
+Sending build context to Docker daemon   16.9kB
+Step 1/6 : FROM python:3.8.10
+ ---> a369814a9797
+Step 2/6 : RUN pip3 install Flask==2.2.2
+ ---> Using cache
+ ---> d61f67c8565f
+Step 3/6 : RUN pip3 install requests==2.22.0
+ ---> Using cache
+ ---> 3490f259e389
+Step 4/6 : RUN pip3 install xmltodict==0.13.0
+ ---> Using cache
+ ---> 8e6a6a6b8aee
+Step 5/6 : COPY iss_tracker.py /iss_tracker.py
+ ---> Using cache
+ ---> e724bf1387c1
+Step 6/6 : CMD ["python3", "iss_tracker.py"]
+ ---> Using cache
+ ---> 4a86216dceea
+Successfully built 4a86216dceea
+Successfully tagged jthet/iss_tracker:hw05
 ```
 
-Check the image was built:
+Check the image was built with `$ docker images`:
 ```
 $ docker images
 REPOSITORY                 TAG        IMAGE ID       CREATED              SIZE
