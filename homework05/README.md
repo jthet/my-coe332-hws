@@ -53,7 +53,7 @@ $ docker build -t <dockerhubusername>/<code>:<version> .
 ```
 Example:
 ```
-$ my-coe332-hws/homework05$ docker build -t jthet/iss_tracker:hw05 .
+$ docker build -t jthet/iss_tracker:hw05 .
 Sending build context to Docker daemon   16.9kB
 Step 1/6 : FROM python:3.8.10
  ---> a369814a9797
