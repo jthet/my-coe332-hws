@@ -1,7 +1,7 @@
 from flask import Flask, request
 import requests
 import xmltodict
-
+import math # NEED TO ADD SQRT TO SPEED CALC
 
 
 
@@ -144,7 +144,7 @@ def speed_calc(epoch: str) -> dict:
 
     veloList = get_velocity(epoch)
     speed = sum([float(i)**2 for i in veloList])
-    return {"speed (km/s)" : speed}
+    return {"speed (km/s)" : sqrt(speed)}
 
 @app.route('/epochs/<epoch>/position', methods = ['GET'])
 def get_position(epoch: str) -> dict:
