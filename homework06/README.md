@@ -50,9 +50,44 @@ This can be done with the following command:
 $ mkdir data
 ```
 
+#### Method 1: Launch the containerized app and Redis using docker-compose (strongly preffered)
 
+Use the command 
 
-#### Method 1: Use Existing Docker Image:
+```
+$ docker-compose up
+Starting homework06_redis-db_1 ... done
+.
+.
+.
+flask-app_1  |  * Debugger is active!
+flask-app_1  |  * Debugger PIN: 411-831-197
+```
+This will create 2 containers; the flask app and the redis database/
+
+Check these containers exist with:
+```
+$ docker ps
+CONTAINER ID   IMAGE                COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+9df1e28ee08e   jthet/gene_api:1.0   "python3 /gene_api.py"   About a minute ago   Up About a minute   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   homework06_flask-app_1
+d00467cc9354   redis:7              "docker-entrypoint.s…"   3 hours ago          Up About a minute   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   homework06_redis-db_1
+
+```
+
+You can now use the flask-redis api through curl: see the "Running the Flask App" section
+
+To close the containers use the command:
+
+```
+$ docker-compose down
+Stopping homework06_flask-app_1 ... done
+Stopping homework06_redis-db_1  ... done
+Removing homework06_flask-app_1 ... done
+Removing homework06_redis-db_1  ... done
+Removing network homework06_default
+```
+
+#### Method 2: Pull and use your existing image from Docker Hub
 
 To use the existing Docker Image run the following commands:
 ```
@@ -77,12 +112,25 @@ $ docker run -d -p 6379:6379 -v $(pwd)/data:/data:rw redis:7 --save 1 1
 This will create a containerized image of redis and map ports 6379 inside the container to port 6379 of the host.
 This also tells redis to save every 1 second and keep only 1 backup in memory. 
 
-Once the redis container is running, the flask app container image can be run with the command 
-
+Once the redis container is running, the flask app container image can be run with the command
+```
+$ docker run -it --rm -p 5000:5000 jthet/gene_api:1.0 
+```
 
 This will simultaneously open the flask app and redis database in a container. Skip to step 2 of method 2 below to see how to use the flask app. 
 
-#### Method 2: Build a new image from Dockerfile:
+
+
+*Note this method will not work with the existing image as the host name of the flask app is set to match docker-compose's host name for redis of 'redis-db'.*
+
+*For this reason, either the redis client host name must be changed from "host = 'redis-rd'" to "host = 0.0.0.1"*
+
+*It is recommened to just use method 1*
+
+
+
+
+#### Method 3: Build a new image from your Dockerfile
 To build a new image from the existing Dockerfile, execute the following commands:
 Note: Dockerfile must be in the current directory when this command is executed.
 ```
@@ -90,41 +138,51 @@ $ docker build -t <dockerhubusername>/<code>:<version> .
 ```
 Example:
 ```
-$ docker build -t jthet/iss_tracker:hw05 .
-Sending build context to Docker daemon   16.9kB
-Step 1/6 : FROM python:3.8.10
+$ docker build -t jthet/gene_api:1.0 .
+Sending build context to Docker daemon   7.68kB
+Step 1/4 : FROM python:3.8.10
  ---> a369814a9797
-Step 2/6 : RUN pip3 install Flask==2.2.2
+Step 2/4 : RUN pip install Flask==2.2.0 redis requests
  ---> Using cache
- ---> d61f67c8565f
-Step 3/6 : RUN pip3 install requests==2.22.0
- ---> Using cache
- ---> 3490f259e389
-Step 4/6 : RUN pip3 install xmltodict==0.13.0
- ---> Using cache
- ---> 8e6a6a6b8aee
-Step 5/6 : COPY iss_tracker.py /iss_tracker.py
- ---> Using cache
- ---> e724bf1387c1
-Step 6/6 : CMD ["python3", "iss_tracker.py"]
- ---> Using cache
- ---> 4a86216dceea
-Successfully built 4a86216dceea
-Successfully tagged jthet/iss_tracker:hw05
+ ---> 20dabd1acd2c
+Step 3/4 : ADD ./gene_api.py /gene_api.py
+ ---> 76fe0eec9b92
+Step 4/4 : CMD ["python3", "/gene_api.py"]
+ ---> Running in fe2c0f85b0db
+Removing intermediate container fe2c0f85b0db
+ ---> ba3e81e8f47f
+Successfully built ba3e81e8f47f
+Successfully tagged jthet/gene_api:1.0
 ```
 
 Check the image was built with `$ docker images`:
 ```
 $ docker images
 REPOSITORY                 TAG        IMAGE ID       CREATED              SIZE
-jthet/iss_tracker        1.0        2883079fad18   About a minute ago   928MB
+jthet/gene_api             1.0        2883079fad18   About a minute ago   928MB
 
 ```
+
+Next, set up the redis data base with the following command:
+
+```
+$ docker run -d -p 6379:6379 -v </path/on/host>:/data redis:7 --save 1 1
+```
+For example:
+```
+$ docker run -d -p 6379:6379 -v $(pwd)/data:/data:rw redis:7 --save 1 1
+9e18a9279d4950a3f05b16 ...
+```
+This will create a containerized image of redis and map ports 6379 inside the container to port 6379 of the host.
+This also tells redis to save every 1 second and keep only 1 backup in memory.
+
 Run the image with the following:
 ```
-$ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
+$ docker run -it --rm -p 5000:5000 jthet/gene_api:1.0
 ```
 This will open the flask app in a new container.
+
+
 
 ### Running the Flask App
 
