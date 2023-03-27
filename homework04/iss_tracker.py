@@ -91,7 +91,7 @@ def speed_calc(epoch: str) -> dict:
 
     veloList = get_velocity(epoch)
     speed = sum([float(i)**2 for i in veloList])
-    return {"speed (km/s)" : speed}
+    return {"speed (km/s)" : sqrt(speed)}
 
 @app.route('/epochs/<int:epoch>/position', methods = ['GET'])
 def get_position(epoch: str) -> dict:
