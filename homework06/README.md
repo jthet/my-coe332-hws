@@ -8,7 +8,7 @@ Create a persistant API using redis and flask.
 ### Data:
 The data for this homework set is a JSON file that contains information on genes found in the human genome, approved by the HGNC (HUGO Genome Nomenclature Committee). The HGNC sets standards for human gene nomenclature. 
 
-This data set holds information on all the HGNC recocgnized genes.
+This data set holds information on all the HGNC recocgnized genes. A full explanation of the data and each dictionary key can be found at the link below.
 
 The data can be viewed here: [HGNC Data](https://www.genenames.org/download/archive/).
 
