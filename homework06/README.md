@@ -1,11 +1,20 @@
-# Homework 6: "Undone (The Sweater Container)" 
-### Scenario: The API you developed for the ISS positional and velocity data (in homework 04) is a great start! But, there are many improvements we could make in order to make the API more useful. And, we can use some smart software engineering & design strategies to make our app more portable.
-#### Objective: Gain familiarity with flask and containers. 
+# Homework 6: "Say It Ain’t Genes" 
+#### Scenario:
+We are going to turn our attention to a brand new dataset. The Human Genome Organization (HUGO) is a non-profit which oversees the HUGO Gene Nomenclature Committee (HGNC). The HGNC “approves a unique and meaningful name for every gene”. For this homework, we will download the complete set of HGNC data and inject it into a Redis database through a Flask interface.
+
+#### Objective:
+Combine redis and flask. 
 
 ### Data:
-The data for this homework set is a XML file that contains information on the state Vectors of the ISS at different epochs (points in time). The data can be viewed here: [ISS Public Data](https://spotthestation.nasa.gov/trajectory_data.cfm).
+The data for this homework set is a JSON file that contains information on genes found in the human genome, approved by the HGNC (HUGO Genome Nomenclature Committee). The HGNC sets standards for human gene nomenclature. 
 
-The Data is read in as XML and converted to a python dictionary with the module `xmltodict`
+This data set holds information on all the HGNC recocgnized genes.
+
+The data can be viewed here: [HGNC Data](https://www.genenames.org/download/archive/).
+
+
+
+# WIP
 
 ### Scripts:
 
