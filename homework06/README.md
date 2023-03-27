@@ -97,8 +97,7 @@ jthet/gene_api             1.0        2883079fad18   About a minute ago   928MB
 ```
 
 ### Launch the containerized app and Redis using docker-compose
-
-Use the command `docker-compose up`:
+After the image is created, use the command `docker-compose up`:
 
 ```
 $ docker-compose up
