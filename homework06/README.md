@@ -33,23 +33,53 @@ The routes and returns are as follows.
 
 
 
-** Note: hgnc_id takes the format "HGNC:1234", where 1234 is replaced with the unique ID number.
+** Note: the variable `<hgnc_id>` takes the format "HGNC:1234", where 1234 is replaced with the unique ID number.
 
 
 
-`Dockerfile`: Text document that contains the commands to assemble the gene_api Docker image that is used to produce the Docker container when ran. 
+`Dockerfile`: Text document that contains the commands to assemble the `gene_api` Docker image that is used to produce the Docker container when ran. 
 
 `docker-compose.yaml`: YAML script that orchestrates the containerization and port mapping of the flask app and redis database.
 
 ### Instructions and Installation:
+
+#### IMPORTANT NOTE:
+Before any use, it is required that an empty folder named "data" is created by the user, so that the user has writing priveleges.
+This can be done with the following command:
+```
+$ mkdir data
+```
+
+
+
 #### Method 1: Use Existing Docker Image:
 
 To use the existing Docker Image run the following commands:
 ```
 $ docker pull jthet/gene_api:1.0
-...
-$ docker-compose up
 ```
+This will add the image to the users docker images, which can be checked with the command 
+```
+$ docker images
+REPOSITORY            TAG       IMAGE ID       CREATED         SIZE
+jthet/gene_api        1.0       c8b0a0825328   4 hours ago     899MB
+```
+Next, set up the redis data base with the following command:
+
+```
+$ docker run -d -p 6379:6379 -v </path/on/host>:/data redis:7 --save 1 1
+```
+For example:
+```
+$ docker run -d -p 6379:6379 -v $(pwd)/data:/data:rw redis:7 --save 1 1
+9e18a9279d4950a3f05b16 ...
+```
+This will create a containerized image of redis and map ports 6379 inside the container to port 6379 of the host.
+This also tells redis to save every 1 second and keep only 1 backup in memory. 
+
+Once the redis container is running, the flask app container image can be run with the command 
+
+
 This will simultaneously open the flask app and redis database in a container. Skip to step 2 of method 2 below to see how to use the flask app. 
 
 #### Method 2: Build a new image from Dockerfile:
