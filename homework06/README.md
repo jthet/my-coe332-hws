@@ -25,10 +25,10 @@ The routes and returns are as follows.
 
 | Route         | Method        | Return |
 | ------------- |:-------------:| ------------- |
-| `/data`     | GET | Retunr all data in Redis database | 
+| `/data`     | GET | Return all data in Redis database | 
 | | DELETE |  Delete data in Redis | 
 | | POST | Put data into Redis | 
-| `/genes`    | GET |  returns the unique hgnc_id of all the genes in the data set      |
+| `/genes`    | GET |  Returns the unique hgnc_id of all the genes in the data set      |
 | `/genes/<hgnc_id>`  | GET |  Return all data associated with a specific hgnc_id |
 
 
@@ -38,6 +38,8 @@ The routes and returns are as follows.
 
 
 `Dockerfile`: Text document that contains the commands to assemble the gene_api Docker image that is used to produce the Docker container when ran. 
+
+`docker-compose.yaml`: YAML script that orchestrates the containerization and port mapping of the flask app and redis database.
 
 ### Instructions and Installation:
 #### Method 1: Use Existing Docker Image:
