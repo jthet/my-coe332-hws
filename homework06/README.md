@@ -18,41 +18,37 @@ The data can be viewed here: [HGNC Data](https://www.genenames.org/download/arch
 
 ### Scripts:
 
-`iss_tracker.py`:
-Flask application for querying the ISS position and velocity. The application should loads in the data mentioned above and provides flask routes for a user to digest the data and find specific data points and values associated with specific data points.
-The routes and returns are as follows
+`gene_api.py`:
+Flask application for querying the genome data. The application should loads in the data mentioned above and provides flask routes for a user to digest the data and find specific data points and associated values.
+The routes and returns are as follows.
 
 
-| Route         | Return        | 
-| ------------- |:-------------:| 
-| `/`     | returns full data set | 
-| `/epochs`       | returns all epochs in the data set      |
-| `/epochs/<int:epoch>`  | returns all the data (state vectors) associated with a specific epoch      |
-| `/epochs/<int:epoch>/position`  | returns the positional coordinates of a specific epoch     |
-| `/epochs/<int:epoch>/velocity`  | returns the velocity of a specific epoch        |
-| `/epochs/<int:epoch>/speed`  | returns the speed of a specific epoch      |
-| `/help`  | Return help text (as a string) that briefly describes each route     |
-| `/delete-data`  | Delete all data from the dictionary object |
-| `/post-data`  | Reload the dictionary object with data from the web |
-
-
-** Note: epoch takes in an integer value, corresponding to the index of the epoch (i.e. the first epoch in the data set is epoch = 1)
+| Route         | Method        | Return |
+| ------------- |:-------------:| ------------- |
+| `/data`     | GET | Retunr all data in Redis database | 
+| | DELETE |  Delete data in Redis | 
+| | POST | Put data into Redis | 
+| `/genes`    | GET |  returns the unique hgnc_id of all the genes in the data set      |
+| `/genes/<hgnc_id>`  | GET |  Return all data associated with a specific hgnc_id |
 
 
 
+** Note: hgnc_id takes the format "HGNC:1234", where 1234 is replaced with the unique ID number.
 
-`Dockerfile`: Text document that contains the commands to assemble the iss_tracker Docker image that is used to produce the Docker container when ran. 
+
+
+`Dockerfile`: Text document that contains the commands to assemble the gene_api Docker image that is used to produce the Docker container when ran. 
 
 ### Instructions and Installation:
 #### Method 1: Use Existing Docker Image:
 
 To use the existing Docker Image run the following commands:
 ```
-$ docker pull jthet/iss_tracker:hw05
+$ docker pull jthet/gene_api:1.0
 ...
-$ docker run -it --rm -p 5000:5000 jthet/iss_tracker:hw05
+$ docker-compose up
 ```
-This will open the flask app. Skip to step 2 of method 2 below to see how to use the flask app. 
+This will simultaneously open the flask app and redis database in a container. Skip to step 2 of method 2 below to see how to use the flask app. 
 
 #### Method 2: Build a new image from Dockerfile:
 To build a new image from the existing Dockerfile, execute the following commands:
