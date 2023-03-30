@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-service
+  username: jacksont
+  env: test
+spec:
+  type: ClusterIP
+  selector:
+    app: jacksont-test-redis-deployment
+  ports:
+  - name: jacksont-test-app-redis-port
+    port: 5000
+    targetPort: 5000
