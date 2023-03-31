@@ -16,8 +16,9 @@ spec:
       env: test
   template:
     metadata:
+      name: jacksont-test-redis-deployment
       labels:
-        app: jacksont-test-redis
+        app: jacksont-test-redis-deployment
         username: jacksont
         env: test
     spec:
