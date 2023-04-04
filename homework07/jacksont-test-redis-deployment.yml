@@ -26,7 +26,6 @@ spec:
         - name: jacksont-test-redis-deployment
           imagePullPolicy: Always
           image: redis:7
-          command: ['sh', '-c', 'echo "Hello, Kubernetes!" >> /data/out.txt && sleep 3600']
           volumeMounts:
           - name: jacksont-app-data
             mountPath: "/data"
