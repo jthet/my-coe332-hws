@@ -38,6 +38,16 @@ The routes and returns are as follows.
 
 `docker-compose.yaml`: YAML script that orchestrates the containerization and port mapping of the flask app and redis database.
 
+`jacksont-test-flask-deployment.yml`: YAML script that orchestrates deployment of 2 flask kubernetes pods
+
+`jacksont-test-flask-service.yml`: YAML script that orchestrates deployment of flask kubernetes service
+
+`jacksont-test-reds-deployment.yml`: YAML script that orchestrates deployment of reds kubernetes pods
+
+`jacksont-test-redis-service.yml`: YAML script that orchestrates deployment of redis kubernetes service
+
+`jacksont-test-pvc.yml`: YAML script that orchestrates deployment of a persistant volume claim, used by the redis pods. 
+
 ## Instructions and Installation:
 
 #### IMPORTANT NOTE:
@@ -300,7 +310,30 @@ The image can the be pushed to docker hub with the command
 $ docker push <dockerhubusername>/<code>:<version>
 ```
 
+To use the existing "jthet/gene_api:1.0" image, nothing needs to be done as it is already prescribed in the scripts. 
+
 ### Accessing the Software
+
+Once all the deployment pods, services, and the pvc are running, the app can be accessed by using the `curl` command, as seen above, inside another k8s pod (typically a development one running a python image).
+
+```
+$ kubectl exec -it <dev-python-pod-name> -- /bin/bash
+root@12234...$ curl <service-IP>:5000/ [ROUTE]
+```
+
+To get the `<service-IP>` execute the command:
+
+```
+jacksont@kube-access:~/my-coe332-hws/homework07$ kubectl get service -o wide
+NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+jacksont-test-flask-service   ClusterIP   10.233.15.189   <none>        5000/TCP   80m   app=jacksont-test-flask-deployment
+jacksont-test-redis-service   ClusterIP   10.233.8.211    <none>        6379/TCP   26h   app=jacksont-test-redis-deployment
+```
+
+and use the IP address associate with the flask service, in the case above: `10.233.15.189`.
+
+No modifications to the flask app or YAML scripts are required as the name of the redis service is linked to the flask deployment yaml file and flask app python script.
+
 
 
 
