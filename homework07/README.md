@@ -1,9 +1,9 @@
-# Homework 6: "Say It Ain’t Genes" 
+# Homework 7: "In The Kubernetes" 
 #### Scenario:
-We are going to turn our attention to a brand new dataset. The Human Genome Organization (HUGO) is a non-profit which oversees the HUGO Gene Nomenclature Committee (HGNC). The HGNC “approves a unique and meaningful name for every gene”. For this homework, we will download the complete set of HGNC data and inject it into a Redis database through a Flask interface.
+The simple app (Flask API + Redis DB) you built in Homework 06 needs a little bit of stability and exposure to the rest of the world. For this homework, we will write the necessary configurations to deploy the app onto the class Kubernetes cluster.
 
 #### Objective:
-Create a persistant API using redis and flask. 
+Create a persistant API using redis and flask. Apply this to a k8s cluster and deploy the software system. 
 
 ### Data:
 The data for this homework set is a JSON file that contains information on genes found in the human genome, approved by the HGNC (HUGO Genome Nomenclature Committee). The HGNC sets standards for human gene nomenclature. 
