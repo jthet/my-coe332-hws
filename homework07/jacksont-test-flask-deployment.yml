@@ -30,6 +30,6 @@ spec:
             - name: jacksont-test-redis-service
               value: jacksont-test-redis-service
           ports:
-            - containerPort: 5000
+            - containerPort: 6379
 
 
