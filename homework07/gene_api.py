@@ -9,7 +9,7 @@ def get_redis_client():
     '''
     Returns a redis db client
     '''
-    redis_service_ip = '10.233.8.211'
+    redis_service_ip = 'jacksont-test-redis-service'
     return redis.Redis(host= redis_service_ip, port=6379, db=0, decode_responses=True)
 
 rd = get_redis_client()

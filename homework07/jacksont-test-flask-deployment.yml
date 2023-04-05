@@ -26,3 +26,10 @@ spec:
         - name: jacksont-test-flask-deployment
           imagePullPolicy: Always
           image: jthet/gene_api:1.0
+          env:
+            - name: jacksont-test-redis-service
+              value: jacksont-test-redis-service
+          ports:
+            - containerPort: 5000
+
+
