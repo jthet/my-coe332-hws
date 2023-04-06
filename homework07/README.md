@@ -48,14 +48,104 @@ The routes and returns are as follows.
 
 `jacksont-test-pvc.yml`: YAML script that orchestrates deployment of a persistant volume claim, used by the redis pods. 
 
-## Instructions and Installation:
+
+## Instructions and Installation: Deploying the Software System to a Kubernetes Cluster
+
+### Initial Deployments
+To deploy the software system to a kubernetes cluster, execture the following commands:
+```
+$ kubectl apply -f jacksont-test-pvc.yml
+$ kubectl apply -f jacksont-test-redis-deployment.yml
+$ kubectl apply -f jacksont-test-redis-service.yml
+$ kubectl apply -f jacksont-test-flask-deployment
+$ kubectl apply -f jacksont-test-flask-service
+```
+This will create the Persistant Volume Claim (PVC) that will store the redis database information independently of the active status of the flask app.
+Along with the PVC, the k8s pods will be deployed for both the redis database and flask app. This can be viewed by executing the command below:
+
+```
+$ kubectl get pods -o wide
+NAME                                              READY   STATUS    RESTARTS   AGE   IP               NODE            NOMINATED NODE   READINESS GATES
+jacksont-test-flask-deployment-65b667b959-hgfjc   1/1     Running   0          29m   10.233.85.211    kube-worker-2   <none>           <none>
+jacksont-test-flask-deployment-65b667b959-ztrnt   1/1     Running   0          29m   10.233.116.66    kube-worker-1   <none>           <none>
+jacksont-test-redis-deployment-75d6f79b88-mbvnl   1/1     Running   0          29m   10.233.85.229    kube-worker-2   <none>           <none>
+py-debug-deployment-f484b4b99-ms8wt               1/1     Running   0          26h   10.233.116.105   kube-worker-1   <none>           <none>
+```
+
+This will also create services that maintain a connection with the deployed pods, allowing existing pods to stop running and be replaced with new pods with no loss of connection between the flask app or redis database and their respective k8s service. This can be seen with the following command:
+```
+jacksont@kube-access:~/my-coe332-hws/homework07$ kubectl get service -o wide
+NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+jacksont-test-flask-service   ClusterIP   10.233.15.189   <none>        5000/TCP   80m   app=jacksont-test-flask-deployment
+jacksont-test-redis-service   ClusterIP   10.233.8.211    <none>        6379/TCP   26h   app=jacksont-test-redis-deployment
+```
+### Note on the Flask app image
+It should be noticed that in the flask app deployment the image "jthet/gene_api:1.0" is pulled from docker hub. This can be found here: [Dockerhub Link to jthet/gene_api image](https://hub.docker.com/r/jthet/gene_api).
+
+In order for the Flask container to get deployed to Kubernetes, it must come from Docker Hub. 
+
+If you would like to replace this image with one of your own, change line 28 of jacksont-test-flask-deployment.yml to the public docker hub image you would like. 
+
+To build a new image from the existing Dockerfile, execute the following commands:
+Note: Dockerfile must be in the current directory when this command is executed.
+```
+$ docker build -t <dockerhubusername>/<code>:<version> .
+```
+
+The image can the be pushed to docker hub with the command
+
+```
+$ docker push <dockerhubusername>/<code>:<version>
+```
+
+To use the existing "jthet/gene_api:1.0" image, nothing needs to be done as it is already prescribed in the scripts. 
+
+### Accessing the Software
+
+Once all the deployment pods, services, and the pvc are running, the app can be accessed by using the `curl` command, as seen above, inside another k8s pod (typically a development one running a python image).
+
+```
+$ kubectl exec -it <dev-python-pod-name> -- /bin/bash
+root@12234...$ curl <service-IP>:5000/ [ROUTE]
+```
+
+To get the `<service-IP>` execute the command:
+
+```
+jacksont@kube-access:~/my-coe332-hws/homework07$ kubectl get service -o wide
+NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+jacksont-test-flask-service   ClusterIP   10.233.15.189   <none>        5000/TCP   80m   app=jacksont-test-flask-deployment
+jacksont-test-redis-service   ClusterIP   10.233.8.211    <none>        6379/TCP   26h   app=jacksont-test-redis-deployment
+```
+
+and use the IP address associate with the flask service, in the case above: `10.233.15.189`.
+
+No modifications to the flask app or YAML scripts are required as the name of the redis service is linked to the flask deployment yaml file and flask app python script.
+
+See the "Using the flask app" section below for how to use the running flask app. 
+
+## Instructions and Installation: Using Docker-Compose
 
 #### IMPORTANT NOTE:
-Before any use, it is required that an empty folder named "data" is created by the user, so that the user has writing priveleges.
+1) Before any use, it is required that an empty folder named "data" is created by the user, so that the user has writing priveleges.
 This can be done with the following command:
 
 ```
 $ mkdir data
+```
+
+2) Line 12, the name of the redis service needs to be changed to 'redis-db'.
+```
+ redis_service_ip = 'jacksont-test-redis-service'
+```
+The entire `get_redis_client()` function should look something like this:
+
+```
+def get_redis_client():
+    '''
+    Returns a redis db client
+    '''
+    return redis.Redis(host='redis-db', port=6379, db=0, decode_responses=True)
 ```
 
 ### Building the Docker image
@@ -144,9 +234,8 @@ Removing network homework06_default
 
 
 
-### Running the Flask App
 
-#### Using the Flask app
+## Using the Flask app
 Each route can be accesd with the following:
 ```
 $ curl localhost:5000/ [ROUTE]
@@ -260,79 +349,6 @@ $ curl localhost:5000/genes/HGNC:52786
 }
 ```
 
-
-## Deploying the Software System to a Kubernetes Cluster
-
-### Initial Deployments
-To deploy the software system to a kubernetes cluster, execture the following commands:
-```
-$ kubectl apply -f jacksont-test-pvc.yml
-$ kubectl apply -f jacksont-test-redis-deployment.yml
-$ kubectl apply -f jacksont-test-redis-service.yml
-$ kubectl apply -f jacksont-test-flask-deployment
-$ kubectl apply -f jacksont-test-flask-service
-```
-This will create the Persistant Volume Claim (PVC) that will store the redis database information independently of the active status of the flask app.
-Along with the PVC, the k8s pods will be deployed for both the redis database and flask app. This can be viewed by executing the command below:
-
-```
-$ kubectl get pods -o wide
-NAME                                              READY   STATUS    RESTARTS   AGE   IP               NODE            NOMINATED NODE   READINESS GATES
-jacksont-test-flask-deployment-65b667b959-hgfjc   1/1     Running   0          29m   10.233.85.211    kube-worker-2   <none>           <none>
-jacksont-test-flask-deployment-65b667b959-ztrnt   1/1     Running   0          29m   10.233.116.66    kube-worker-1   <none>           <none>
-jacksont-test-redis-deployment-75d6f79b88-mbvnl   1/1     Running   0          29m   10.233.85.229    kube-worker-2   <none>           <none>
-py-debug-deployment-f484b4b99-ms8wt               1/1     Running   0          26h   10.233.116.105   kube-worker-1   <none>           <none>
-```
-
-This will also create services that maintain a connection with the deployed pods, allowing existing pods to stop running and be replaced with new pods with no loss of connection between the flask app or redis database and their respective k8s service. This can be seen with the following command:
-```
-jacksont@kube-access:~/my-coe332-hws/homework07$ kubectl get service -o wide
-NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
-jacksont-test-flask-service   ClusterIP   10.233.15.189   <none>        5000/TCP   80m   app=jacksont-test-flask-deployment
-jacksont-test-redis-service   ClusterIP   10.233.8.211    <none>        6379/TCP   26h   app=jacksont-test-redis-deployment
-```
-### Note on the Flask app image
-It should be noticed that in the flask app deployment the image "jthet/gene_api:1.0" is pulled from docker hub. This can be found here: [Dockerhub Link to jthet/gene_api image](https://hub.docker.com/r/jthet/gene_api).
-
-In order for the Flask container to get deployed to Kubernetes, it must come from Docker Hub. 
-
-If you would like to replace this image with one of your own, change line 28 of jacksont-test-flask-deployment.yml to the public docker hub image you would like. 
-
-To build a new image from the existing Dockerfile, execute the following commands:
-Note: Dockerfile must be in the current directory when this command is executed.
-```
-$ docker build -t <dockerhubusername>/<code>:<version> .
-```
-
-The image can the be pushed to docker hub with the command
-
-```
-$ docker push <dockerhubusername>/<code>:<version>
-```
-
-To use the existing "jthet/gene_api:1.0" image, nothing needs to be done as it is already prescribed in the scripts. 
-
-### Accessing the Software
-
-Once all the deployment pods, services, and the pvc are running, the app can be accessed by using the `curl` command, as seen above, inside another k8s pod (typically a development one running a python image).
-
-```
-$ kubectl exec -it <dev-python-pod-name> -- /bin/bash
-root@12234...$ curl <service-IP>:5000/ [ROUTE]
-```
-
-To get the `<service-IP>` execute the command:
-
-```
-jacksont@kube-access:~/my-coe332-hws/homework07$ kubectl get service -o wide
-NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
-jacksont-test-flask-service   ClusterIP   10.233.15.189   <none>        5000/TCP   80m   app=jacksont-test-flask-deployment
-jacksont-test-redis-service   ClusterIP   10.233.8.211    <none>        6379/TCP   26h   app=jacksont-test-redis-deployment
-```
-
-and use the IP address associate with the flask service, in the case above: `10.233.15.189`.
-
-No modifications to the flask app or YAML scripts are required as the name of the redis service is linked to the flask deployment yaml file and flask app python script.
 
 
 
