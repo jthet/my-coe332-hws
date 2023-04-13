@@ -1,8 +1,10 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 import redis
 import requests
 import json
 import os
+import matplotlib.pyplot as plt
+import io
 
 app = Flask(__name__)
 
@@ -16,7 +18,7 @@ def get_redis_image_db():
     redis_ip = os.environ.get('REDIS-IP')
     if not redis_ip:
         raise Exception()
-    return redis.Redis(host=redis_ip, port=6379, db=1, decode_responses=True)
+    return redis.Redis(host=redis_ip, port=6379, db=1)
 
 rd = get_redis_client()
 
@@ -55,7 +57,7 @@ def handle_data() -> list:
         return output_list
         
 
-    elif method =='DELETE':
+    elif method == 'DELETE':
         rd.flushdb()
         return f'data deleted, there are {len(rd.keys())} keys in the db\n'
 
@@ -107,6 +109,78 @@ def get_hgnc_data(hgnc_id) -> dict:
             return json.loads(rd.get(key))
 
     return "Given ID did not match any IDs in the Data base\n"
+
+
+
+@app.route('/image', methods = ['POST', 'GET', 'DELETE'])
+def image_manip():
+    '''
+
+    '''
+
+    method = request.method
+
+    if method == 'GET':
+        if(len(rd_image.keys()) == 0):
+            return "No images in the Database\n"
+        else:
+            image = rd_image.get('image')
+            buf = io.BytesIO(image)
+            buf.seek(0)
+
+            existing_images = rd_image.keys() == 0
+
+            file_name = f'image{existing_images}.png'
+            return send_file(buf, mimetype = 'image/png') #, as_attachment=True, download_name=file_name)   <--- Could potentially add, works without
+
+    elif method == 'POST':
+        if (len(rd.keys()) == 0):
+            return "No data in the data base\n"
+        else:
+
+            chromosome_counts = [0] * 23
+
+            for item in rd.keys():
+                try:
+                    spec_id = rd.get(item)
+                    spec_id = json.loads(spec_id)
+
+                    location = spec_id['location_sortable']
+                    location = str(location)
+
+                    if location[0] == '0':
+                        chromosome = str(location[1])
+                    else:
+                        chromosome = str(location[0] + location[1])
+
+                    
+                    if chromosome.isdigit():
+                        index = int(chromosome) - 1
+                        chromosome_counts[index] = chromosome_counts[index] + 1
+                    else:
+                        pass
+                except:
+                    pass
+
+
+            ## Plotting
+            chromosome_names = ['chr' + str(i) for i in range(1, 24)]
+
+            plt.pie(chromosome_counts, labels=chromosome_names, autopct='%1.1f%%')
+            plt.title('Proportion of Genes on Each Chromosome')
+            plt.axis('equal')
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format = 'png')
+            buf.seek(0)
+
+            rd_image.set('image', buf.getvalue())
+
+            return 'Image is posted\n'
+
+    elif method =='DELETE':
+        rd_image.flushdb()
+        return f'Plot deleted, there are {len(rd_image.keys())} images in the db\n'
 
 
 
