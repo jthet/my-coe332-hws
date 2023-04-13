@@ -366,7 +366,7 @@ No images in the Database
 ```
 
 
-Route: `/image -X DELETE
+Route: `/image -X DELETE`
 ```
 $ curl localhost:5000/image -X DELETE
 Plot deleted, there are 0 images in the db
