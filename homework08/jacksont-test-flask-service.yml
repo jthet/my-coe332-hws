@@ -11,6 +11,6 @@ spec:
   selector:
     app: jacksont-test-flask-deployment
   ports:
-  - name: jacksont-test-flask-deployment
+  - name: http
     port: 5000
     targetPort: 5000

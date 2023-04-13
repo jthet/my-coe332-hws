@@ -23,9 +23,15 @@ spec:
         env: test
     spec:
       containers:
-        - name: jacksont-test-redis-deployment
+        - name: redis
           imagePullPolicy: Always
           image: redis:7
+          env:
+          - name: FLASK_APP
+            value: "gene_api.py"
+          ports:
+          - name: http
+            containerPort: 6379
           volumeMounts:
           - name: jacksont-app-data
             mountPath: "/data"

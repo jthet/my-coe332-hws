@@ -28,8 +28,8 @@ spec:
           image: jthet/gene_api:1.0
           env:
             - name: REDIS-IP
-              value: redis-db
+              value: jacksont-test-redis-service
           ports:
-            - containerPort: 6379
+            - containerPort: 5000
 
 
