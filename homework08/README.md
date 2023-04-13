@@ -354,11 +354,23 @@ $ curl localhost:5000/image -X GET >> image.png
 100 67574  100 67574    0     0  16.1M      0 --:--:-- --:--:-- --:--:-- 16.1M
 $ ls
 Dockerfile  README.md  config.yaml  data  docker-compose.yaml  gene_api.py  **image.png**  kubernetes
+```
+This will return an image with the same name that is piped initially. 
+An example of this image is shown below:
+![Data Plot](./resources/image.png)
 
+Example if there are no images in the data base:
+```
+$ curl localhost:5000/image -X GET
+No images in the Database
 ```
 
-![Data Plot](/resources/image.png)
 
+Route: `/image -X DELETE
+```
+$ curl localhost:5000/image -X DELETE
+Plot deleted, there are 0 images in the db
+```
 
 
 
